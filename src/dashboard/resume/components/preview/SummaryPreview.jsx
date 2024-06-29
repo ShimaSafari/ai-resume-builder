@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Summerypreview({resumeInfo}) {
+function SummaryPreview({resumeInfo}) {
   return (
     <p className='text-xs'>
         {resumeInfo?.summery}
@@ -8,4 +8,4 @@ function Summerypreview({resumeInfo}) {
   )
 }
 
-export default Summerypreview
+export default SummaryPreview
