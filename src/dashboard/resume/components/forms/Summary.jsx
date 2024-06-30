@@ -6,6 +6,10 @@ import { useParams } from "react-router-dom";
 import GlobalApi from "./../../../../../service/GlobalApi";
 import { toast } from "sonner";
 import { Brain, LoaderCircle } from "lucide-react";
+import { AIChatSession } from "./../../../../../service/AIModal";
+
+const prompt =
+  "Job Title: {jobTitle} , Depends on job title give me list of summary for 3 experience level, Mid Level and Freasher level in 3 - 4 lines in array format, Always With summary and experience_level Field, just in valid JSON Format. just send me json file with just array";
 
 function Summary({ enabledNext }) {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
@@ -14,6 +18,7 @@ function Summary({ enabledNext }) {
 
   const params = useParams();
   const [loading, setLoading] = useState(false);
+  const [aiGeneratedSummaryList, setAiGeneratedSummaryList] = useState();
 
   useEffect(() => {
     summary &&
@@ -49,6 +54,16 @@ function Summary({ enabledNext }) {
     );
     enabledNext(true);
   };
+  const GenerateSummaryFromAI = async () => {
+    setLoading(true);
+    const PROMPT = prompt.replace("{jobTitle}", resumeInfo?.jobTitle);
+    console.log(PROMPT);
+    const result = await AIChatSession.sendMessage(PROMPT);
+    console.log(result.response.text());
+
+    setAiGeneratedSummaryList(JSON.parse([result.response.text()]));
+    setLoading(false);
+  };
   return (
     <div>
       <div className="p-5 shadow-lg rounded-lg border-t-4 border-t-primary  mt-10">
@@ -63,6 +78,7 @@ function Summary({ enabledNext }) {
               variant="outline"
               size="sm"
               type="button"
+              onClick={() => GenerateSummaryFromAI()}
             >
               <Brain className="h-4 w-4" />
               Generate From AI
@@ -80,6 +96,24 @@ function Summary({ enabledNext }) {
           </div>
         </form>
       </div>
+
+      {aiGeneratedSummaryList && (
+        <div className="my-5">
+          <h2 className="font-bold text-lg">Suggestions</h2>
+          {aiGeneratedSummaryList?.map((item, index) => (
+            <div
+              key={index}
+              onClick={() => setSummary(item?.summary)}
+              className="p-5 shadow-lg my-4 rounded-lg cursor-pointer"
+            >
+              <h2 className="font-bold my-1 text-primary">
+                Level: {item?.experience_level}
+              </h2>
+              <p>{item?.summary}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
