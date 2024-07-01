@@ -22,14 +22,11 @@ function Summary({ enabledNext }) {
 
   useEffect(() => {
     summary &&
-      setResumeInfo(
-        {
-          ...resumeInfo,
-          summery: summary,
-        },
-        [summary]
-      );
-  });
+      setResumeInfo({
+        ...resumeInfo,
+        summary: summary,
+      });
+  }, [summary]);
 
   const onSave = (e) => {
     e.preventDefault();
@@ -54,12 +51,13 @@ function Summary({ enabledNext }) {
     );
     enabledNext(true);
   };
+
   const GenerateSummaryFromAI = async () => {
     setLoading(true);
     const PROMPT = prompt.replace("{jobTitle}", resumeInfo?.jobTitle);
     console.log(PROMPT);
     const result = await AIChatSession.sendMessage(PROMPT);
-    console.log(result.response.text());
+    console.log(JSON.parse(result.response.text()));
 
     setAiGeneratedSummaryList(JSON.parse([result.response.text()]));
     setLoading(false);
@@ -86,8 +84,8 @@ function Summary({ enabledNext }) {
           </div>
           <Textarea
             className="mt-5"
-            onChange={(e) => setSummary(e.target.value)}
             required
+            onChange={(e) => setSummary(e.target.value)}
           />
           <div className="mt-3 flex justify-end">
             <Button type="submit" disabled={loading}>
