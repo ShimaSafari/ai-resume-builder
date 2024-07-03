@@ -23,8 +23,8 @@ const PROMPT =
 
 // const PROMPT='position title: {positionTitle} , Depends on position title give me 5-7 bullet points for my experience in resume (Please do not add experience level key or any other key and No JSON object). always send all in seperate HTML tags';
 // const PROMPT='position titile: {positionTitle} , Depends on position title give me 5-7 bullet points for my experience in resume (Please do not add experince level and No JSON array) , give me result in HTML tags'
-function RichTextEditor({ onRichTextEditorChange, index }) {
-  const [value, setValue] = useState("");
+function RichTextEditor({ onRichTextEditorChange, index ,defaultValue}) {
+  const [value, setValue] = useState(defaultValue);
 
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
 

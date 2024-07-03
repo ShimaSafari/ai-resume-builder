@@ -26,7 +26,7 @@ function Experience() {
   //   useEffect(() => {
   //     resumeInfo?.Experience.length > 0 &&
   //       setExperinceList(resumeInfo?.Experience);
-  //   }, []);
+  //   }, []); //experience is dynamic
 
   const handleChange = (index, event) => {
     const newEntries = experinceList.slice();
@@ -65,7 +65,7 @@ function Experience() {
   useEffect(() => {
     setResumeInfo({
       ...resumeInfo,
-      Experience: experinceList,
+      experience: experinceList, //E
     });
   }, [experinceList]);
 
@@ -73,7 +73,7 @@ function Experience() {
     setLoading(true);
     const data = {
       data: {
-        Experience: experinceList,
+        experience: experinceList.map(({ id, ...rest }) => rest),//add map //E
       },
     };
 

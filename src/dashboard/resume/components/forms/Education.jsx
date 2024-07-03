@@ -23,6 +23,11 @@ function Education() {
     },
   ]);
 
+  // useEffect(()=>{
+  //   resumeInfo&&setEducationalList(resumeInfo?.education)
+  // },[])//remove , render loop
+  
+
   const handleChange = (event, index) => {
     const newEntries = educationalList.slice();
     const { name, value } = event.target;
@@ -53,7 +58,7 @@ function Education() {
     setLoading(true);
     const data = {
       data: {
-        education: educationalList,
+        education: educationalList.map(({ id, ...rest }) => rest), //add map
       },
     };
     GlobalApi.UpdateResumeDetail(params.resumeId, data).then(
@@ -88,15 +93,24 @@ function Education() {
                 <Input
                   name="universityName"
                   onChange={(e) => handleChange(e, index)}
+                  defaultValue={item?.universityName}
                 />
               </div>
               <div>
                 <label>Degree</label>
-                <Input name="degree" onChange={(e) => handleChange(e, index)} />
+                <Input
+                  name="degree"
+                  onChange={(e) => handleChange(e, index)}
+                  defaultValue={item?.degree}
+                />
               </div>
               <div>
                 <label>Major</label>
-                <Input name="major" onChange={(e) => handleChange(e, index)} />
+                <Input
+                  name="major"
+                  onChange={(e) => handleChange(e, index)}
+                  defaultValue={item?.major}
+                />
               </div>
               <div>
                 <label>Start Date</label>
@@ -104,6 +118,7 @@ function Education() {
                   type="date"
                   name="startDate"
                   onChange={(e) => handleChange(e, index)}
+                  defaultValue={item?.startDate}
                 />
               </div>
               <div>
@@ -112,6 +127,7 @@ function Education() {
                   type="date"
                   name="endDate"
                   onChange={(e) => handleChange(e, index)}
+                  defaultValue={item?.endDate}
                 />
               </div>
               <div className="col-span-2">
@@ -119,6 +135,7 @@ function Education() {
                 <Textarea
                   name="description"
                   onChange={(e) => handleChange(e, index)}
+                  defaultValue={item?.description}
                 />
               </div>
             </div>

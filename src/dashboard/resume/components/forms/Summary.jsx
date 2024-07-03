@@ -86,6 +86,7 @@ function Summary({ enabledNext }) {
             className="mt-5"
             required
             onChange={(e) => setSummary(e.target.value)}
+            defaultValue={summary?summary:resumeInfo?.summary}
           />
           <div className="mt-3 flex justify-end">
             <Button type="submit" disabled={loading}>
