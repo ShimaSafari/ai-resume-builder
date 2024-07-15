@@ -23,10 +23,9 @@ function Education() {
     },
   ]);
 
-  // useEffect(()=>{
-  //   resumeInfo&&setEducationalList(resumeInfo?.education)
-  // },[])//remove , render loop
-  
+  useEffect(() => {
+    resumeInfo && setEducationalList(resumeInfo?.education);
+  }, []);
 
   const handleChange = (event, index) => {
     const newEntries = educationalList.slice();
@@ -65,7 +64,7 @@ function Education() {
       (res) => {
         console.log(res);
         setLoading(false);
-        toast("Details updated");
+        toast("Detail updated. 🩷");
       },
       (error) => {
         setLoading(false);

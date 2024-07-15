@@ -19,10 +19,10 @@ function EducationalPreview({ resumeInfo }) {
           >
             {education?.universityName}
           </h2>
-          <h2 className="text-xs flex justify-between">
+          <h2 className="text-xs flex justify-between flex-wrap ">
             {education?.degree} in {education?.major}
             <span>
-              {education?.startDate} - {education?.endDate}
+              {education?.startDate} to {education?.endDate}
             </span>
           </h2>
           <p className="text-xs my-2">{education?.description}</p>

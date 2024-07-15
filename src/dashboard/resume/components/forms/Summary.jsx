@@ -43,7 +43,7 @@ function Summary({ enabledNext }) {
         console.log(res);
         enabledNext(true);
         setLoading(false);
-        toast("Detail Updated.👍");
+        toast("Detail Updated. ❤️");
       },
       (error) => {
         setLoading(false);

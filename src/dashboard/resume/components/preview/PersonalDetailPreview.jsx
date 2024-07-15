@@ -18,7 +18,7 @@ function PersonalDetailPreview({ resumeInfo }) {
       >
         {resumeInfo?.address}
       </h2>
-      <div className="flex justify-between">
+      <div className="flex md:justify-between flex-wrap justify-center">
         <h2
           className="font-normal text-xs"
           style={{ color: resumeInfo?.themeColor }}

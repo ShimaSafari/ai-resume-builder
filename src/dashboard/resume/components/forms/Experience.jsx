@@ -18,27 +18,27 @@ const formField = {
   workSummary: "",
 };
 function Experience() {
-  const [experinceList, setExperinceList] = useState([formField]);
+  const [experienceList, setExperienceList] = useState([]);
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
   const params = useParams();
   const [loading, setLoading] = useState(false);
 
-  //   useEffect(() => {
-  //     resumeInfo?.Experience.length > 0 &&
-  //       setExperinceList(resumeInfo?.Experience);
-  //   }, []); //experience is dynamic
+  useEffect(() => {
+    resumeInfo?.experience.length > 0 &&
+      setExperienceList(resumeInfo?.experience);
+  }, []); //experience is dynamic
 
   const handleChange = (index, event) => {
-    const newEntries = experinceList.slice();
+    const newEntries = experienceList.slice();
     const { name, value } = event.target;
     newEntries[index][name] = value;
     console.log(newEntries);
-    setExperinceList(newEntries);
+    setExperienceList(newEntries);
   };
 
   const AddNewExperience = () => {
-    setExperinceList([
-      ...experinceList,
+    setExperienceList([
+      ...experienceList,
       {
         title: "",
         companyName: "",
@@ -52,38 +52,38 @@ function Experience() {
   };
 
   const RemoveExperience = () => {
-    setExperinceList((experinceList) => experinceList.slice(0, -1));
+    setExperienceList((experienceList) => experienceList.slice(0, -1));
   };
 
   const handleRichTextEditor = (e, name, index) => {
-    const newEntries = experinceList.slice();
+    const newEntries = experienceList.slice();
     newEntries[index][name] = e.target.value;
 
-    setExperinceList(newEntries);
+    setExperienceList(newEntries);
   };
 
   useEffect(() => {
     setResumeInfo({
       ...resumeInfo,
-      experience: experinceList, //E
+      experience: experienceList, //E
     });
-  }, [experinceList]);
+  }, [experienceList]);
 
   const onSave = () => {
     setLoading(true);
     const data = {
       data: {
-        experience: experinceList.map(({ id, ...rest }) => rest),//add map //E
+        experience: experienceList.map(({ id, ...rest }) => rest), //add map //E
       },
     };
 
-    console.log(experinceList);
+    console.log(experienceList);
 
     GlobalApi.UpdateResumeDetail(params?.resumeId, data).then(
       (res) => {
         console.log(res);
         setLoading(false);
-        toast("Details updated !");
+        toast("Detail updated. 💚");
       },
       (error) => {
         setLoading(false);
@@ -96,7 +96,7 @@ function Experience() {
         <h2 className="font-bold text-lg">Professional Experience</h2>
         <p>Add Your previous Job experience</p>
         <div>
-          {experinceList.map((item, index) => (
+          {experienceList?.map((item, index) => (
             <div key={index}>
               <div className="grid grid-cols-2 gap-3 border p-3 my-5 rounded-lg">
                 <div>

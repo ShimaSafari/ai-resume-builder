@@ -26,6 +26,6 @@ export default {
   CreateNewResume,
   GetUserResumes,
   UpdateResumeDetail,
-  // GetResumeById,
+  GetResumeById,
   DeleteResumeById
 };

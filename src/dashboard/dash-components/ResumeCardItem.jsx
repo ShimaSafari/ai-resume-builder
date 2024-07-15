@@ -50,11 +50,11 @@ function ResumeCardItem({ resume, refreshData }) {
       <Link to={`/dashboard/resume/${resume.documentId}/edit`}>
         <div
           className="p-14 bg-gradient-to-b  from-sky-200 to-slate-100 flex 
-          items-center justify-center h-[280px]  border-t-4 rounded-t-lg"
+          items-center justify-center h-[250px]  border-t-4 rounded-t-lg"
           style={{ borderColor: resume?.themeColor }}
         >
           {/* <Notebook /> */}
-          <img src="/cv.png" alt="loading" width={120} height={120} />
+          <img src="/cv.png" alt="cv-icon" width={150} height={150}/>
         </div>
       </Link>
 

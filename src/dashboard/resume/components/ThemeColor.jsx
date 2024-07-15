@@ -48,7 +48,7 @@ function ThemeColor() {
     };
     GlobalApi.UpdateResumeDetail(resumeId, data).then((res) => {
       console.log(res);
-      toast("Theme Color Updated");
+      toast("Theme Color Updated. 💌");
     });
   };
   return (

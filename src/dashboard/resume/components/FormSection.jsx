@@ -10,7 +10,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import ThemeColor from "./ThemeColor";
 
 function FormSection() {
-  const [activeFormIndex, setActiveFormIndex] = useState(2);
+  const [activeFormIndex, setActiveFormIndex] = useState(1);
   const [enableNext, setEnableNext] = useState(false);
   const { resumeId } = useParams();
   return (

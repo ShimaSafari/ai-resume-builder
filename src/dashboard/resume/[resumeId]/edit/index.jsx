@@ -10,16 +10,16 @@ function EditResume() {
   const { resumeId } = useParams();
   const [resumeInfo, setResumeInfo] = useState();//remove dummy
   useEffect(() => {
-    setResumeInfo(dummy);//remove line uncomment below
-    // GetResumeInfo();
+    // setResumeInfo(dummy);//remove line, uncomment below
+    GetResumeInfo();
   }, []);
 
-  // const GetResumeInfo = () => {
-  //   GlobalApi.GetResumeById(resumeId).then((res) => {
-  //     console.log(res.data.data);
-  //     setResumeInfo(res.data.data);
-  //   });
-  // };
+  const GetResumeInfo = () => {
+    GlobalApi.GetResumeById(resumeId).then((res) => {
+      console.log(res.data.data);
+      setResumeInfo(res.data.data);
+    });
+  };
   return (
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
       <div className="grid grid-cols-1 md:grid-cols-2 p-10 gap-10">

@@ -16,13 +16,13 @@ function Skills() {
       rating: 0,
     },
   ]);
-  const {resumeId} =useParams();
+  const { resumeId } = useParams();
   const [loading, setLoading] = useState(false);
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
 
-   // useEffect(()=>{
-  //   resumeInfo&&setSkillsList(resumeInfo?.skills)
-  // },[])
+  useEffect(() => {
+    resumeInfo && setSkillsList(resumeInfo?.skills);
+  }, []);
 
   const handleChange = (index, name, value) => {
     const newEntries = skillsList.slice();
@@ -47,19 +47,22 @@ function Skills() {
 
   const onSave = () => {
     setLoading(true);
-    const data ={
-        data:{
-            skills:skillsList.map(({ id, ...rest }) => rest),//add map
-        }
-    }
-    GlobalApi.UpdateResumeDetail(resumeId,data).then(res=>{
+    const data = {
+      data: {
+        skills: skillsList.map(({ id, ...rest }) => rest), //add map
+      },
+    };
+    GlobalApi.UpdateResumeDetail(resumeId, data).then(
+      (res) => {
         console.log(res);
         setLoading(false);
-        toast('Details updated')
-    },(error)=>{
+        toast("Details updated. 💙");
+      },
+      (error) => {
         setLoading(false);
-        toast('Server Error, Try again')
-    })
+        toast("Server Error, Try again 🌚");
+      }
+    );
   };
 
   useEffect(() => {

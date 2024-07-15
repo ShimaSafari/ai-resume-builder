@@ -18,11 +18,11 @@ import {
 import { AIChatSession } from "./../../../../service/AIModal";
 import { toast } from "sonner";
 
-const PROMPT =
-  "position title: {positionTitle} Generate 5-7 bullet points for my experience in resume.(Please do not include experience level key and avoid JSON format.).always send all in seperate HTML tags";
+// const PROMPT =
+//   "position title: {positionTitle} Generate 5-7 bullet points for my experience in resume.(Please do not include experience level key and avoid JSON format.).always send all in seperate HTML tags";
 
-// const PROMPT='position title: {positionTitle} , Depends on position title give me 5-7 bullet points for my experience in resume (Please do not add experience level key or any other key and No JSON object). always send all in seperate HTML tags';
-// const PROMPT='position titile: {positionTitle} , Depends on position title give me 5-7 bullet points for my experience in resume (Please do not add experince level and No JSON array) , give me result in HTML tags'
+const PROMPT='position title: {positionTitle} , Depends on position title give me 5-7 bullet points for my experience in resume (Please do not add experience level key or position_title or any other key and No JSON object). always send all in seperate HTML tags(as ul li , always add ::marker before of tags for bullet point)';
+
 function RichTextEditor({ onRichTextEditorChange, index ,defaultValue}) {
   const [value, setValue] = useState(defaultValue);
 
@@ -44,8 +44,6 @@ function RichTextEditor({ onRichTextEditorChange, index ,defaultValue}) {
 
     const result = await AIChatSession.sendMessage(prompt);
     console.log(result.response.text());
-    // const res = JSON.parse(result.response.text());
-    // setValue(res[0]);
     const res = result.response.text();
     setValue(res.replace('[', '').replace(']', ''));
     setLoading(false);
