@@ -51,6 +51,7 @@ function PersonalDetail({ enabledNext }) {
       },
       (error) => {
         setLoading(false);
+        toast("Error, Nothing Changed 🌚");
       }
     );
     enabledNext(true);
@@ -87,6 +88,26 @@ function PersonalDetail({ enabledNext }) {
               onChange={handleInputChange}
               required
               defaultValue={resumeInfo?.jobTitle}
+            />
+          </div>
+          <div>
+            <label className="text-sm">Date of Birth</label>
+            <Input
+              name="birthDate"
+              onChange={handleInputChange}
+              required
+              defaultValue={resumeInfo?.birthDate}
+              type="date"
+            />
+          </div>
+          <div>
+            <label className="text-sm">Nationality</label>
+            <Input
+              name="nationality"
+              onChange={handleInputChange}
+              required
+              defaultValue={resumeInfo?.nationality}
+              
             />
           </div>
           <div className="col-span-2">

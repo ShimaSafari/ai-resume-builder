@@ -21,7 +21,7 @@ import { toast } from "sonner";
 // const PROMPT =
 //   "position title: {positionTitle} Generate 5-7 bullet points for my experience in resume.(Please do not include experience level key and avoid JSON format.).always send all in seperate HTML tags";
 
-const PROMPT='position title: {positionTitle} , Depends on position title give me 5-7 bullet points for my experience in resume (Please do not add experience level key or position_title or any other key and No JSON object). always send all in seperate HTML tags(as ul li , always add ::marker before of tags for bullet point)';
+const PROMPT='position title: {positionTitle} , Depends on position title give me 5-7 bullet points for my experience in resume (Please dont add experience level key or position_title or any other key and No JSON object). always send all in seperate HTML tags(as ul li , with always has bullet point marker before the text)';
 
 function RichTextEditor({ onRichTextEditorChange, index ,defaultValue}) {
   const [value, setValue] = useState(defaultValue);
@@ -55,7 +55,7 @@ function RichTextEditor({ onRichTextEditorChange, index ,defaultValue}) {
         <Button
           variant="outline"
           size="sm"
-          className="flex gap-2 border-primary text-primary"
+          className="border-primary text-primary flex gap-2 hover:bg-gradient-to-l from-sky-500 to-indigo-500 hover:text-white"
           onClick={GenerateSummaryFromAI}
         >
           {loading ? (

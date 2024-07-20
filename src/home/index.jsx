@@ -40,25 +40,69 @@ function Home() {
                 FEATURED IN
               </span>
               <div className="flex flex-wrap justify-center items-center mt-8 sm:justify-between">
-                <a href="https://react.dev/"  className="mr-5 mb-5 lg:mb-0" target="_blank">
-                  <img src="/react.svg" alt="react.js" width={50} height={50}/>
+                <a
+                  href="https://react.dev/"
+                  className="mr-5 mb-5 lg:mb-0"
+                  target="_blank"
+                >
+                  <img src="/react.svg" alt="react.js" width={50} height={50} />
                 </a>
-                <a href="https://vitejs.dev/" className="mr-5 mb-5 lg:mb-0" target="_blank">
+                <a
+                  href="https://vitejs.dev/"
+                  className="mr-5 mb-5 lg:mb-0"
+                  target="_blank"
+                >
                   <img src="/vite.svg" alt="vitejs" width={50} height={50} />
                 </a>
-                <a href="https://tailwindcss.com/" className="mr-5 mb-5 lg:mb-0" target="_blank">
-                  <img src="/tailwind.svg" alt="tailwindCss" width={50} height={50}/>
+                <a
+                  href="https://tailwindcss.com/"
+                  className="mr-5 mb-5 lg:mb-0"
+                  target="_blank"
+                >
+                  <img
+                    src="/tailwind.svg"
+                    alt="tailwindCss"
+                    width={50}
+                    height={50}
+                  />
                 </a>
-                <a href="https://ui.shadcn.com/" className="mr-5 mb-5 lg:mb-0" target="_blank">
-                  <img src="/shadcn.png" alt="shadcn"width={50} height={50}className="rounded-lg" />
+                <a
+                  href="https://ui.shadcn.com/"
+                  className="mr-5 mb-5 lg:mb-0"
+                  target="_blank"
+                >
+                  <img
+                    src="/shadcn.png"
+                    alt="shadcn"
+                    width={50}
+                    height={50}
+                    className="rounded-lg"
+                  />
                 </a>
-                <a href="https://ai.google.dev/gemini-api" className="mr-5 mb-5 lg:mb-0" target="_blank">
-                  <img src="/gemini.png" alt="gemini-api" width={50} height={50}/>
+                <a
+                  href="https://ai.google.dev/gemini-api"
+                  className="mr-5 mb-5 lg:mb-0"
+                  target="_blank"
+                >
+                  <img
+                    src="/gemini.png"
+                    alt="gemini-api"
+                    width={50}
+                    height={50}
+                  />
                 </a>
-                <a href="https://clerk.com/" className="mr-5 mb-5 lg:mb-0" target="_blank">
+                <a
+                  href="https://clerk.com/"
+                  className="mr-5 mb-5 lg:mb-0"
+                  target="_blank"
+                >
                   <img src="/clerk.png" alt="notLoad" width={50} height={50} />
                 </a>
-                <a href="https://strapi.io/" className="mr-5 mb-5 lg:mb-0" target="_blank">
+                <a
+                  href="https://strapi.io/"
+                  className="mr-5 mb-5 lg:mb-0"
+                  target="_blank"
+                >
                   <img src="/strapi.png" alt="strapi" width={50} height={50} />
                 </a>
               </div>
@@ -97,7 +141,7 @@ function Home() {
                hover:shadow-primary/20 transition ease-in-out delay-150     hover:-translate-y-1 hover:scale-110 duration-200"
               href="#"
             >
-              <Edit className="h-8 w-8 text-primary"/>
+              <Edit className="h-8 w-8 text-primary" />
 
               <h2 className="mt-4 text-xl font-bold text-black">
                 Edit Your form

@@ -47,6 +47,7 @@ function Summary({ enabledNext }) {
       },
       (error) => {
         setLoading(false);
+        toast("Server Error, Try again 🌚");
       }
     );
     enabledNext(true);
@@ -72,7 +73,7 @@ function Summary({ enabledNext }) {
           <div className="flex justify-between items-end">
             <label>Add Summary</label>
             <Button
-              className="border-primary text-primary flex gap-2"
+              className="border-primary text-primary flex gap-2 hover:bg-gradient-to-l from-sky-500 to-indigo-500 hover:text-white"
               variant="outline"
               size="sm"
               type="button"

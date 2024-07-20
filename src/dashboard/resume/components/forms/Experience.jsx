@@ -87,6 +87,7 @@ function Experience() {
       },
       (error) => {
         setLoading(false);
+        toast("Server Error, Try again 🌚");
       }
     );
   };

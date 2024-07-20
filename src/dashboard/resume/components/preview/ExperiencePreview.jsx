@@ -14,18 +14,22 @@ function ExperiencePreview({ resumeInfo }) {
         <div key={index} className="my-5">
           <h2
             className="text-sm font-bold"
-            style={{ color: resumeInfo?.themeColor}}
+            style={{ color: resumeInfo?.themeColor }}
           >
             {exper?.title}
           </h2>
           <h2 className="text-xs flex justify-between flex-wrap">
             {exper?.companyName},{exper?.city},{exper?.state}
             <span>
-              {exper?.startDate} to {exper?.currentlyWorking ? "Present" : exper.endDate}
+              {exper?.startDate} to{" "}
+              {exper?.currentlyWorking ? "Present" : exper.endDate}
             </span>
           </h2>
           {/* <p className="text-xs my-2">{exper.workSummary}</p> */}
-          <div className='text-xs my-2' dangerouslySetInnerHTML={{__html:exper?.workSummary}} />
+          <div
+            className="text-xs my-2"
+            dangerouslySetInnerHTML={{ __html: exper?.workSummary }}
+          />
         </div>
       ))}
     </div>

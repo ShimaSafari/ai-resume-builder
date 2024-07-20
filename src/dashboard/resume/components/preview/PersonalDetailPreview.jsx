@@ -1,3 +1,4 @@
+import { Mail } from "lucide-react";
 import React from "react";
 
 function PersonalDetailPreview({ resumeInfo }) {
@@ -16,9 +17,25 @@ function PersonalDetailPreview({ resumeInfo }) {
         className="text-center font-normal text-xs"
         style={{ color: resumeInfo?.themeColor }}
       >
-        {resumeInfo?.address}
+        {resumeInfo?.birthDate}
       </h2>
-      <div className="flex md:justify-between flex-wrap justify-center">
+      <div className="flex flex-wrap flex-col text-center lg:flex-row lg:justify-between">
+      <h2
+          className="text-center font-normal text-xs"
+          style={{ color: resumeInfo?.themeColor }}
+        >
+          {resumeInfo?.nationality}
+        </h2> 
+        <h2
+          className="text-center font-normal text-xs"
+          style={{ color: resumeInfo?.themeColor }}
+        >
+          {resumeInfo?.address}
+        </h2>  
+         
+      </div>
+      
+      <div className="flex flex-wrap flex-col text-center lg:flex-row lg:justify-between">
         <h2
           className="font-normal text-xs"
           style={{ color: resumeInfo?.themeColor }}
@@ -29,6 +46,7 @@ function PersonalDetailPreview({ resumeInfo }) {
           className="font-normal text-xs"
           style={{ color: resumeInfo?.themeColor }}
         >
+
           {resumeInfo?.email}
         </h2>
       </div>
