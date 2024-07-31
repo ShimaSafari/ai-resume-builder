@@ -1,6 +1,6 @@
-# My AI Resume Builder
+# 💙 My AI Resume Builder 💙
 
-# Created with
+# Created with 🤍
 
 ## React.js - vite - Shadcn/ui - Clerk - Strapi - Gemini API
 
