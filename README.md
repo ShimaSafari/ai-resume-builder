@@ -4,7 +4,7 @@
 
 ## React.js - vite - Shadcn/ui - Clerk - Strapi - Gemini API
 
-<img src="/output.png">
+<img src="/public/output.png">
 
 ## Getting Started
 
