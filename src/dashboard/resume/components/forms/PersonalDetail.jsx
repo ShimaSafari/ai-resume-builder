@@ -16,10 +16,6 @@ function PersonalDetail({ enabledNext }) {
 
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    console.log(params);
-  }, []);
-
   const handleInputChange = (e) => {
     enabledNext(false);
     const { name, value } = e.target;
@@ -51,7 +47,7 @@ function PersonalDetail({ enabledNext }) {
       },
       (error) => {
         setLoading(false);
-        toast("Error, Nothing Changed 🌚");
+        toast("Nothing Changed 🌚");
       }
     );
     enabledNext(true);

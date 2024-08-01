@@ -55,13 +55,13 @@ function FormSection() {
         <Summary enabledNext={(v) => setEnableNext(v)} />
       ) : /* experince */
       activeFormIndex == 3 ? (
-        <Experience enabledNext={(v) => setEnableNext(v)} />
+        <Experience/>
       ) : /* educational detail */
       activeFormIndex == 4 ? (
-        <Education enabledNext={(v) => setEnableNext(v)} />
+        <Education/>
       ) : /* skills */
       activeFormIndex == 5 ? (
-        <Skills enabledNext={(v) => setEnableNext(v)} />
+        <Skills/>
       ) : activeFormIndex == 6 ? (
         <Navigate to={"/my-resume/" + resumeId + "/view"} />
       ) : null}
