@@ -3,14 +3,12 @@ import { useParams } from "react-router-dom";
 import FormSection from "../../components/FormSection";
 import ResumePreview from "../../components/ResumePreview";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext";
-import dummy from "@/data/dummy";
 import GlobalApi from "./../../../../../service/GlobalApi";
 
 function EditResume() {
   const { resumeId } = useParams();
-  const [resumeInfo, setResumeInfo] = useState();//remove dummy
+  const [resumeInfo, setResumeInfo] = useState();
   useEffect(() => {
-    // setResumeInfo(dummy);//remove line, uncomment below
     GetResumeInfo();
   }, []);
 

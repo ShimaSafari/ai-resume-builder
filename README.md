@@ -1,9 +1,11 @@
-# My AI Resume Builder
 
-# Created with
+# 💙 My AI Resume Builder 💙
+
+# Created with 🤍
+
 ## React.js - vite - Shadcn/ui - Clerk - Strapi - Gemini API
 
-<img src="./output.png">
+<img src="/public/output.png">
 
 ## Getting Started
 
@@ -110,8 +112,7 @@ To learn all about React.js and Other tools, take a look at the following resour
             └── 📁[resumeId]
                 └── 📁edit
                     └── index.jsx
-    └── 📁data
-        └── dummy.jsx
+
     └── 📁home
         └── index.jsx
     └── index.css
