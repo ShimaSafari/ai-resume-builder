@@ -11,9 +11,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { v4 as uuidv4 } from "uuid";
-import GlobalApi from "./../../../service/GlobalApi";
 import { useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/supabaseClient";
 
 function AddResume() {
   const [openDialog, setOpenDialog] = useState(false);
@@ -21,32 +21,38 @@ function AddResume() {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const navigation = useNavigate();
+
   const onCreate = async () => {
     setLoading(true);
     const uuid = uuidv4();
 
-    const data = {
-      data: {
-        title: resumeTitle,
-        resumeId: uuid,
-        userEmail: user?.primaryEmailAddress?.emailAddress,
-        userName: user?.fullName,
-      },
+    const userData = {
+      title: resumeTitle,
+      resumeId: uuid,
+      userEmail: user?.primaryEmailAddress?.emailAddress,
+      userName: user?.fullName,
     };
+    const { data, error } = await supabase
+      .from("user-resumes")
+      .insert([
+        {
+          title: userData.title,
+          resumeId: userData.resumeId,
+          userEmail: userData.userEmail,
+          userName: userData.userName,
+        },
+      ])
+      .select();
 
-    GlobalApi.CreateNewResume(data).then(
-      (res) => {
-        console.log(res.data.data.documentId);
-        if (res) {
-          setLoading(false);
-          navigation(`/dashboard/resume/${res.data.data.documentId}/edit`);
-        }
-      },
-      (error) => {
-        setLoading(false);
-      }
-    );
+    if (error) {
+      console.error("Error creating resume:", error.message);
+      setLoading(false);
+    }
+    // console.log("Resume created successfully", data);
+    setLoading(false);
+    navigation(`/dashboard/resume/${userData.resumeId}/edit`);
   };
+
   return (
     <div>
       <div

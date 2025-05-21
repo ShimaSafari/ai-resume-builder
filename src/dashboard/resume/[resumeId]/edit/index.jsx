@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import FormSection from "../../components/FormSection";
 import ResumePreview from "../../components/ResumePreview";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext";
-import GlobalApi from "./../../../../../service/GlobalApi";
+import { supabase } from "@/supabaseClient";
 
 function EditResume() {
   const { resumeId } = useParams();
@@ -12,11 +12,15 @@ function EditResume() {
     GetResumeInfo();
   }, []);
 
-  const GetResumeInfo = () => {
-    GlobalApi.GetResumeById(resumeId).then((res) => {
-      console.log(res.data.data);
-      setResumeInfo(res.data.data);
-    });
+  const GetResumeInfo = async () => {
+    const { data, error } = await supabase
+      .from("user-resumes")
+      .select("*")
+      .eq("resumeId", resumeId);
+    // setResumeInfo(data);
+    if (error) {
+      console.error("Error fetching resumes:", error.message);
+    }
   };
   return (
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>

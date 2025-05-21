@@ -3,10 +3,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import GlobalApi from "./../../../../../service/GlobalApi";
 import { toast } from "sonner";
 import { Brain, LoaderCircle } from "lucide-react";
 import { AIChatSession } from "./../../../../../service/AIModal";
+import { supabase } from "@/supabaseClient";
 
 const prompt =
   "Job Title: {jobTitle} , Depends on job title give me list of summary for 3 experience level, Mid Level and Freasher level in 3 - 4 lines in array format, Always With summary and experience_level Field, just in valid JSON Format. just send me json file with just array";
@@ -28,41 +28,47 @@ function Summary({ enabledNext }) {
       });
   }, [summary]);
 
-  const onSave = (e) => {
+  const onSave = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const data = {
-      data: {
+    const { data, error } = await supabase
+      .from("user-resumes")
+      .update({
         summary: summary,
-      },
-    };
+      })
+      .eq("resumeId", params?.resumeId)
+      .select()
+      .single();
+    enabledNext(true);
+    setLoading(false);
+    toast("Detail Updated. ❤️");
+    if (error) {
+      setLoading(false);
+      toast("Server Error, Try again 🌚");
+    }
 
-    GlobalApi.UpdateResumeDetail(params?.resumeId, data).then(
-      (res) => {
-        console.log(res);
-        enabledNext(true);
-        setLoading(false);
-        toast("Detail Updated. ❤️");
-      },
-      (error) => {
-        setLoading(false);
-        toast("Server Error, Try again 🌚");
-      }
-    );
     enabledNext(true);
   };
 
   const GenerateSummaryFromAI = async () => {
     setLoading(true);
     const PROMPT = prompt.replace("{jobTitle}", resumeInfo?.jobTitle);
-    console.log(PROMPT);
     const result = await AIChatSession.sendMessage(PROMPT);
-    console.log(JSON.parse(result.response.text()));
 
-    setAiGeneratedSummaryList(JSON.parse([result.response.text()]));
+    // Remove code fences and whitespace
+    let text = await result.response.text();
+    text = text.replace(/```json|```/g, "").trim();
+
+    try {
+      const parsed = JSON.parse(text);
+      setAiGeneratedSummaryList(parsed);
+    } catch (e) {
+      toast("AI response is not valid JSON.");
+      setAiGeneratedSummaryList([]);
+    }
     setLoading(false);
   };
+
   return (
     <div>
       <div className="p-5 shadow-lg rounded-lg border-t-4 border-t-primary  mt-10">
@@ -84,10 +90,10 @@ function Summary({ enabledNext }) {
             </Button>
           </div>
           <Textarea
-            className="mt-5"
+            className="mt-5 h-32"
             required
             onChange={(e) => setSummary(e.target.value)}
-            defaultValue={summary?summary:resumeInfo?.summary}
+            defaultValue={summary ? summary : resumeInfo?.summary}
           />
           <div className="mt-3 flex justify-end">
             <Button type="submit" disabled={loading}>

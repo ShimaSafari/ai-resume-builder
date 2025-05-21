@@ -20,21 +20,20 @@ function PersonalDetailPreview({ resumeInfo }) {
         {resumeInfo?.birthDate}
       </h2>
       <div className="flex flex-wrap flex-col text-center lg:flex-row lg:justify-between">
-      <h2
+        <h2
           className="text-center font-normal text-xs"
           style={{ color: resumeInfo?.themeColor }}
         >
           {resumeInfo?.nationality}
-        </h2> 
+        </h2>
         <h2
           className="text-center font-normal text-xs"
           style={{ color: resumeInfo?.themeColor }}
         >
           {resumeInfo?.address}
-        </h2>  
-         
+        </h2>
       </div>
-      
+
       <div className="flex flex-wrap flex-col text-center lg:flex-row lg:justify-between">
         <h2
           className="font-normal text-xs"
@@ -46,7 +45,6 @@ function PersonalDetailPreview({ resumeInfo }) {
           className="font-normal text-xs"
           style={{ color: resumeInfo?.themeColor }}
         >
-
           {resumeInfo?.email}
         </h2>
       </div>

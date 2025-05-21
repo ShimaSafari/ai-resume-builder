@@ -5,71 +5,66 @@ import "@smastrom/react-rating/style.css";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-react";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext";
-import GlobalApi from "./../../../../../service/GlobalApi";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { supabase } from "@/supabaseClient";
 
 function Skills() {
-  const [skillsList, setSkillsList] = useState([
-    {
-      name: "",
-      rating: 0,
-    },
-  ]);
+  const [skillsList, setSkillsList] = useState([{ name: "", rating: 0 }]);
   const { resumeId } = useParams();
   const [loading, setLoading] = useState(false);
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
 
+  // Fetch from Supabase on mount
   useEffect(() => {
-    resumeInfo && setSkillsList(resumeInfo?.skills);
-  }, []);
+    const fetchSkills = async () => {
+      const { data, error } = await supabase
+        .from("user-resumes")
+        .select("skills")
+        .eq("resumeId", resumeId)
+        .single();
+      if (!error && data && Array.isArray(data.skills)) {
+        setSkillsList(
+          data.skills.length ? data.skills : [{ name: "", rating: 0 }]
+        );
+        setResumeInfo((prev) => ({ ...prev, skills: data.skills }));
+      }
+    };
+    fetchSkills();
+  }, [resumeId]);
 
   const handleChange = (index, name, value) => {
-    const newEntries = skillsList.slice();
+    const newEntries = [...skillsList];
     newEntries[index][name] = value;
-    console.log(newEntries);
     setSkillsList(newEntries);
   };
 
   const AddNewSkills = () => {
-    setSkillsList([
-      ...skillsList,
-      {
-        name: "",
-        rating: 0,
-      },
-    ]);
+    setSkillsList([...skillsList, { name: "", rating: 0 }]);
   };
 
   const RemoveSkills = () => {
-    setSkillsList((skillsList) => skillsList.slice(0, -1));
+    setSkillsList((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
   };
 
-  const onSave = () => {
+  const onSave = async () => {
     setLoading(true);
-    const data = {
-      data: {
-        skills: skillsList.map(({ id, ...rest }) => rest), //add map
-      },
-    };
-    GlobalApi.UpdateResumeDetail(resumeId, data).then(
-      (res) => {
-        console.log(res);
-        setLoading(false);
-        toast("Details updated. 💙");
-      },
-      (error) => {
-        setLoading(false);
-        toast("Server Error, Try again 🌚");
-      }
-    );
+    const { error } = await supabase
+      .from("user-resumes")
+      .update({ skills: skillsList })
+      .eq("resumeId", resumeId);
+    setLoading(false);
+    if (error) {
+      toast("Server Error, Try again 🌚");
+    } else {
+      toast("Details updated. 💙");
+      setResumeInfo((prev) => ({ ...prev, skills: skillsList }));
+    }
   };
 
+  // Keep context in sync
   useEffect(() => {
-    setResumeInfo({
-      ...resumeInfo,
-      skills: skillsList,
-    });
+    setResumeInfo((prev) => ({ ...prev, skills: skillsList }));
   }, [skillsList]);
 
   return (
@@ -78,13 +73,16 @@ function Skills() {
       <p>Add Your Top Professional Skills</p>
       <div>
         {skillsList.map((item, index) => (
-          <div className="flex justify-between my-3 border rounded-lg p-3">
+          <div
+            key={index}
+            className="flex justify-between my-3 border rounded-lg p-3"
+          >
             <div>
               <label className="text-xs">Name</label>
               <Input
                 className="w-full"
                 onChange={(e) => handleChange(index, "name", e.target.value)}
-                defaultValue={item.name}
+                value={item.name}
               />
             </div>
             <Rating
@@ -95,7 +93,6 @@ function Skills() {
           </div>
         ))}
       </div>
-
       <div className="flex justify-between">
         <div className="flex gap-2">
           <Button
@@ -113,7 +110,7 @@ function Skills() {
             - Remove
           </Button>
         </div>
-        <Button disabled={loading} onClick={() => onSave()}>
+        <Button disabled={loading} onClick={onSave}>
           {loading ? <LoaderCircle className="animate-spin" /> : "Save"}
         </Button>
       </div>

@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Loader2Icon, MoreVertical, Notebook } from "lucide-react";
+import { Loader2Icon, MoreVertical } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -19,42 +17,40 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import GlobalApi from "./../../../service/GlobalApi";
 import { toast } from "sonner";
+import { supabase } from "@/supabaseClient";
 
 function ResumeCardItem({ resume, refreshData }) {
   const navigation = useNavigate();
-
   const [openAlert, setOpenAlert] = useState(false);
-
   const [loading, setLoading] = useState(false);
-  const onDelete = () => {
+
+  const onDelete = async () => {
     setLoading(true);
-    GlobalApi.DeleteResumeById(resume.documentId).then(
-      (res) => {
-        console.log(res);
-        toast("Resume Deleted! 🥲");
-        refreshData();
-        setLoading(false);
-        setOpenAlert(false);
-      },
-      (error) => {
-        setLoading(false);
-      }
-    );
+    const { data, error } = await supabase
+      .from("user-resumes")
+      .delete()
+      .eq("resumeId", resume.resumeId);
+    toast("Resume Deleted! 🥲");
+    refreshData();
+    setLoading(false);
+    setOpenAlert(false);
+
+    if (error) {
+      console.error("Error deleting resume:", error.message);
+      setLoading(false);
+    }
   };
   return (
     <div>
-      <Link to={`/dashboard/resume/${resume.documentId}/edit`}>
+      <Link to={`/dashboard/resume/${resume.resumeId}/edit`}>
         <div
           className="p-14 bg-gradient-to-b  from-sky-200 to-slate-100 flex 
           items-center justify-center h-[250px]  border-t-4 rounded-t-lg"
           style={{ borderColor: resume?.themeColor }}
         >
-          {/* <Notebook /> */}
-          <img src="/cv.png" alt="cv-icon" width={150} height={150}/>
+          <img src="/cv.png" alt="cv-icon" width={150} height={150} />
         </div>
       </Link>
 
@@ -71,18 +67,18 @@ function ResumeCardItem({ resume, refreshData }) {
           <DropdownMenuContent>
             <DropdownMenuItem
               onClick={() =>
-                navigation(`/dashboard/resume/${resume.documentId}/edit`)
+                navigation(`/dashboard/resume/${resume.resumeId}/edit`)
               }
             >
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => navigation(`/my-resume/${resume.documentId}/view`)}
+              onClick={() => navigation(`/my-resume/${resume.resumeId}/view`)}
             >
               View
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => navigation(`/my-resume/${resume.documentId}/view`)}
+              onClick={() => navigation(`/my-resume/${resume.resumeId}/view`)}
             >
               Download
             </DropdownMenuItem>

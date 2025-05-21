@@ -18,14 +18,11 @@ import {
 import { AIChatSession } from "./../../../../service/AIModal";
 import { toast } from "sonner";
 
-// const PROMPT =
-//   "position title: {positionTitle} Generate 5-7 bullet points for my experience in resume.(Please do not include experience level key and avoid JSON format.).always send all in seperate HTML tags";
+// const PROMPT='position title: {positionTitle} , Depends on position title give me 5-7 bullet points for my experience in resume (Please dont add experience level key or position_title or any other key and No JSON object). always send all in seperate HTML tags(as ul li , with always has bullet point marker before the text)';
+const PROMPT =
+  "position title: {positionTitle} , I need 5-7 resume bullet points for this position title. Deliver the output strictly as a standalone HTML <ul> containing <li> elements. Ensure each <li> has a bullet point marker. Absolutely no JSON, no wrapper keys, and no introductory or concluding sentences. Only the raw HTML.";
 
-const PROMPT='position title: {positionTitle} , Depends on position title give me 5-7 bullet points for my experience in resume (Please dont add experience level key or position_title or any other key and No JSON object). always send all in seperate HTML tags(as ul li , with always has bullet point marker before the text)';
-
-function RichTextEditor({ onRichTextEditorChange, index ,defaultValue}) {
-  const [value, setValue] = useState(defaultValue);
-
+function RichTextEditor({ onRichTextEditorChange, index, value }) {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
 
   const [loading, setLoading] = useState(false);
@@ -34,7 +31,7 @@ function RichTextEditor({ onRichTextEditorChange, index ,defaultValue}) {
     setLoading(true);
     if (!resumeInfo.experience[index].title) {
       toast("Please Add Position Title");
-      return;
+      setLoading(false);
     }
 
     const prompt = PROMPT.replace(
@@ -43,9 +40,9 @@ function RichTextEditor({ onRichTextEditorChange, index ,defaultValue}) {
     );
 
     const result = await AIChatSession.sendMessage(prompt);
-    console.log(result.response.text());
+    // console.log(result.response.text());
     const res = result.response.text();
-    setValue(res.replace('[', '').replace(']', ''));
+    setValue(res.replace("[", "").replace("]", ""));
     setLoading(false);
   };
   return (
@@ -72,7 +69,6 @@ function RichTextEditor({ onRichTextEditorChange, index ,defaultValue}) {
         <Editor
           value={value}
           onChange={(e) => {
-            setValue(e.target.value);
             onRichTextEditorChange(e);
           }}
         >

@@ -7,9 +7,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { LayoutGrid } from "lucide-react";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext";
-import GlobalApi from "./../../../../service/GlobalApi";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { supabase } from "@/supabaseClient";
 
 function ThemeColor() {
   const colors = [
@@ -34,22 +34,24 @@ function ThemeColor() {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
   const [selectedColor, setSelectedColor] = useState();
   const { resumeId } = useParams();
-
-  const onColorSelect = (color) => {
+  const onColorSelect = async (color) => {
     setSelectedColor(color);
-    setResumeInfo({
-      ...resumeInfo,
+    setResumeInfo((prev) => ({
+      ...prev,
       themeColor: color,
-    });
-    const data = {
-      data: {
-        themeColor: color,
-      },
-    };
-    GlobalApi.UpdateResumeDetail(resumeId, data).then((res) => {
-      console.log(res);
+    }));
+
+    const { error } = await supabase
+      .from("user-resumes")
+      .update({ themeColor: color })
+      .eq("resumeId", resumeId);
+
+    if (error) {
+      console.error("Error updating theme color:", error.message);
+      toast("Error updating theme color.");
+    } else {
       toast("Theme Color Updated. 💌");
-    });
+    }
   };
   return (
     <Popover>
@@ -63,6 +65,7 @@ function ThemeColor() {
         <div className="grid grid-cols-4 gap-1">
           {colors.map((item, index) => (
             <div
+              key={index}
               onClick={() => onColorSelect(item)}
               className={`h-6 w-6 rounded-full cursor-pointer
                hover:border-slate-600 border

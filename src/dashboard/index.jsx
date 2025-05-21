@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import AddResume from "./dash-components/AddResume";
-import GlobalApi from "./../../service/GlobalApi";
 import { useUser } from "@clerk/clerk-react";
 import ResumeCardItem from "./dash-components/ResumeCardItem";
+import { supabase } from "@/supabaseClient";
 
 function Dashboard() {
   const { user } = useUser();
@@ -13,12 +13,15 @@ function Dashboard() {
   }, [user]);
 
   /* Get users resume list */
-  const GetResumesList = () => {
-    GlobalApi.GetUserResumes(user?.primaryEmailAddress?.emailAddress).then(
-      (res) => {
-        setResumeList(res.data.data);
-      }
-    );
+  const GetResumesList = async () => {
+    const { data, error } = await supabase
+      .from("user-resumes")
+      .select("*")
+      .eq("userEmail", user?.primaryEmailAddress?.emailAddress);
+    setResumeList(data);
+    if (error) {
+      console.log("Error fetching user resumes:", error);
+    }
   };
   return (
     <div className="p-10 md:px-20 lg:px-32">
@@ -28,7 +31,11 @@ function Dashboard() {
         <AddResume />
         {resumeList.length > 0 &&
           resumeList.map((resume, index) => (
-            <ResumeCardItem resume={resume} key={index} refreshData={GetResumesList}/>
+            <ResumeCardItem
+              resume={resume}
+              key={index}
+              refreshData={GetResumesList}
+            />
           ))}
       </div>
     </div>

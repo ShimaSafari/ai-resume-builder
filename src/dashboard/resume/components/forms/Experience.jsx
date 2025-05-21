@@ -4,11 +4,11 @@ import React, { useContext, useEffect, useState } from "react";
 import RichTextEditor from "../RichTextEditor";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext";
 import { useParams } from "react-router-dom";
-import GlobalApi from "./../../../../../service/GlobalApi";
+import { supabase } from "@/supabaseClient";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
 
-const formField = {
+const emptyExperience = {
   title: "",
   companyName: "",
   city: "",
@@ -17,87 +17,81 @@ const formField = {
   endDate: "",
   workSummary: "",
 };
+
 function Experience() {
-  const [experienceList, setExperienceList] = useState([]);
+  const [experienceList, setExperienceList] = useState([emptyExperience]);
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
   const params = useParams();
   const [loading, setLoading] = useState(false);
 
+  // Fetch from Supabase on mount
   useEffect(() => {
-    resumeInfo?.experience.length > 0 &&
-      setExperienceList(resumeInfo?.experience);
-  }, []); //experience is dynamic
+    const fetchExperience = async () => {
+      const { data, error } = await supabase
+        .from("user-resumes")
+        .select("experience")
+        .eq("resumeId", params?.resumeId)
+        .single();
+      if (!error && data && Array.isArray(data.experience)) {
+        setExperienceList(
+          data.experience.length ? data.experience : [emptyExperience]
+        );
+        setResumeInfo((prev) => ({ ...prev, experience: data.experience }));
+      }
+    };
+    fetchExperience();
+  }, [params?.resumeId]);
 
   const handleChange = (index, event) => {
-    const newEntries = experienceList.slice();
+    const newEntries = [...experienceList];
     const { name, value } = event.target;
     newEntries[index][name] = value;
-    console.log(newEntries);
     setExperienceList(newEntries);
   };
 
   const AddNewExperience = () => {
-    setExperienceList([
-      ...experienceList,
-      {
-        title: "",
-        companyName: "",
-        city: "",
-        state: "",
-        startDate: "",
-        endDate: "",
-        workSummary: "",
-      },
-    ]);
+    setExperienceList((prev) => [...prev, { ...emptyExperience }]);
   };
 
   const RemoveExperience = () => {
-    setExperienceList((experienceList) => experienceList.slice(0, -1));
+    setExperienceList((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
   };
 
   const handleRichTextEditor = (e, name, index) => {
-    const newEntries = experienceList.slice();
-    newEntries[index][name] = e.target.value;
-
-    setExperienceList(newEntries);
+    setExperienceList((prev) => {
+      const newEntries = prev.map((item, idx) =>
+        idx === index ? { ...item, [name]: e.target.value } : item
+      );
+      return newEntries;
+    });
   };
 
   useEffect(() => {
-    setResumeInfo({
-      ...resumeInfo,
-      experience: experienceList, //E
-    });
+    setResumeInfo((prev) => ({ ...prev, experience: experienceList }));
   }, [experienceList]);
 
-  const onSave = () => {
+  const onSave = async () => {
     setLoading(true);
-    const data = {
-      data: {
-        experience: experienceList.map(({ id, ...rest }) => rest), //add map //E
-      },
-    };
-
-    console.log(experienceList);
-
-    GlobalApi.UpdateResumeDetail(params?.resumeId, data).then(
-      (res) => {
-        console.log(res);
-        setLoading(false);
-        toast("Detail updated. 💚");
-      },
-      (error) => {
-        setLoading(false);
-        toast("Server Error, Try again 🌚");
-      }
-    );
+    const { error } = await supabase
+      .from("user-resumes")
+      .update({ experience: experienceList })
+      .eq("resumeId", params?.resumeId);
+    setLoading(false);
+    if (error) {
+      toast("Server Error, Try again 🌚");
+    } else {
+      toast("Detail updated. 💚");
+      setResumeInfo((prev) => ({ ...prev, experience: experienceList }));
+    }
   };
+
   return (
     <div>
       <div className="p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-10">
         <h2 className="font-bold text-lg">Professional Experience</h2>
         <p>Add Your previous Job experience</p>
         <div>
-          {experienceList?.map((item, index) => (
+          {experienceList.map((item, index) => (
             <div key={index}>
               <div className="grid grid-cols-2 gap-3 border p-3 my-5 rounded-lg">
                 <div>
@@ -105,7 +99,7 @@ function Experience() {
                   <Input
                     name="title"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.title}
+                    value={item.title}
                   />
                 </div>
                 <div>
@@ -113,7 +107,7 @@ function Experience() {
                   <Input
                     name="companyName"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.companyName}
+                    value={item.companyName}
                   />
                 </div>
                 <div>
@@ -121,7 +115,7 @@ function Experience() {
                   <Input
                     name="city"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.city}
+                    value={item.city}
                   />
                 </div>
                 <div>
@@ -129,7 +123,7 @@ function Experience() {
                   <Input
                     name="state"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.state}
+                    value={item.state}
                   />
                 </div>
                 <div>
@@ -138,7 +132,7 @@ function Experience() {
                     type="date"
                     name="startDate"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.startDate}
+                    value={item.startDate}
                   />
                 </div>
                 <div>
@@ -147,14 +141,14 @@ function Experience() {
                     type="date"
                     name="endDate"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.endDate}
+                    value={item.endDate}
                   />
                 </div>
                 <div className="col-span-2">
                   {/* Work Summary  */}
                   <RichTextEditor
                     index={index}
-                    defaultValue={item?.workSummary}
+                    value={item.workSummary}
                     onRichTextEditorChange={(event) =>
                       handleRichTextEditor(event, "workSummary", index)
                     }
@@ -171,7 +165,7 @@ function Experience() {
               onClick={AddNewExperience}
               className="text-primary"
             >
-              + Add More Experience
+              + Add More
             </Button>
             <Button
               variant="outline"
@@ -181,7 +175,7 @@ function Experience() {
               - Remove
             </Button>
           </div>
-          <Button disabled={loading} onClick={() => onSave()}>
+          <Button disabled={loading} onClick={onSave}>
             {loading ? <LoaderCircle className="animate-spin" /> : "Save"}
           </Button>
         </div>

@@ -4,95 +4,94 @@ import { Textarea } from "@/components/ui/textarea";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import GlobalApi from "././../../../../../service/GlobalApi";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
+import { supabase } from "@/supabaseClient";
+
+const emptyEducation = {
+  universityName: "",
+  degree: "",
+  major: "",
+  startDate: "",
+  endDate: "",
+  description: "",
+};
 
 function Education() {
   const [loading, setLoading] = useState(false);
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
   const params = useParams();
-  const [educationalList, setEducationalList] = useState([
-    {
-      universityName: "",
-      degree: "",
-      major: "",
-      startDate: "",
-      endDate: "",
-      description: "",
-    },
-  ]);
+  const [educationalList, setEducationalList] = useState([emptyEducation]);
 
+  // Fetch from Supabase on mount
   useEffect(() => {
-    resumeInfo && setEducationalList(resumeInfo?.education);
-  }, []);
+    const fetchEducation = async () => {
+      const { data, error } = await supabase
+        .from("user-resumes")
+        .select("education")
+        .eq("resumeId", params?.resumeId)
+        .single();
+      if (!error && data && Array.isArray(data.education)) {
+        setEducationalList(
+          data.education.length ? data.education : [emptyEducation]
+        );
+        setResumeInfo((prev) => ({ ...prev, education: data.education }));
+      }
+    };
+    fetchEducation();
+  }, [params?.resumeId]);
 
   const handleChange = (event, index) => {
-    const newEntries = educationalList.slice();
     const { name, value } = event.target;
-    newEntries[index][name] = value;
-    console.log(newEntries);
-    setEducationalList(newEntries);
+    setEducationalList((prev) => {
+      const newEntries = prev.map((item, idx) =>
+        idx === index ? { ...item, [name]: value } : item
+      );
+      return newEntries;
+    });
   };
 
   const AddNewEducation = () => {
-    setEducationalList([
-      ...educationalList,
-      {
-        universityName: "",
-        degree: "",
-        major: "",
-        startDate: "",
-        endDate: "",
-        description: "",
-      },
-    ]);
+    setEducationalList((prev) => [...prev, { ...emptyEducation }]);
   };
 
   const RemoveEducation = () => {
-    setEducationalList((educationalList) => educationalList.slice(0, -1));
+    setEducationalList((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
   };
 
-  const onSave = () => {
+  const onSave = async () => {
     setLoading(true);
-    const data = {
-      data: {
-        education: educationalList.map(({ id, ...rest }) => rest), //add map
-      },
-    };
-    GlobalApi.UpdateResumeDetail(params.resumeId, data).then(
-      (res) => {
-        console.log(res);
-        setLoading(false);
-        toast("Detail updated. 🩷");
-      },
-      (error) => {
-        setLoading(false);
-        toast("Server Error, Please try again");
-      }
-    );
+    const { error } = await supabase
+      .from("user-resumes")
+      .update({ education: educationalList })
+      .eq("resumeId", params?.resumeId);
+    setLoading(false);
+    if (error) {
+      toast("Server Error, Please try again");
+    } else {
+      toast("Detail updated. 🩷");
+      setResumeInfo((prev) => ({ ...prev, education: educationalList }));
+    }
   };
 
   useEffect(() => {
-    setResumeInfo({
-      ...resumeInfo,
-      education: educationalList,
-    });
+    setResumeInfo((prev) => ({ ...prev, education: educationalList }));
   }, [educationalList]);
+
   return (
     <div className="p-5 shadow-lg rounded-lg border-t-4 border-t-primary  mt-10">
       <h2 className="font-bold text-lg">Education</h2>
       <p>Add your educational details</p>
       <div>
         {educationalList.map((item, index) => (
-          <div>
+          <div key={index}>
             <div className="grid grid-cols-2 gap-3 border p-3 my-5 rounded-lg">
               <div className="col-span-2">
                 <label>University Name</label>
                 <Input
                   name="universityName"
                   onChange={(e) => handleChange(e, index)}
-                  defaultValue={item?.universityName}
+                  value={item.universityName}
                 />
               </div>
               <div>
@@ -100,7 +99,7 @@ function Education() {
                 <Input
                   name="degree"
                   onChange={(e) => handleChange(e, index)}
-                  defaultValue={item?.degree}
+                  value={item.degree}
                 />
               </div>
               <div>
@@ -108,7 +107,7 @@ function Education() {
                 <Input
                   name="major"
                   onChange={(e) => handleChange(e, index)}
-                  defaultValue={item?.major}
+                  value={item.major}
                 />
               </div>
               <div>
@@ -117,7 +116,7 @@ function Education() {
                   type="date"
                   name="startDate"
                   onChange={(e) => handleChange(e, index)}
-                  defaultValue={item?.startDate}
+                  value={item.startDate}
                 />
               </div>
               <div>
@@ -126,7 +125,7 @@ function Education() {
                   type="date"
                   name="endDate"
                   onChange={(e) => handleChange(e, index)}
-                  defaultValue={item?.endDate}
+                  value={item.endDate}
                 />
               </div>
               <div className="col-span-2">
@@ -134,7 +133,7 @@ function Education() {
                 <Textarea
                   name="description"
                   onChange={(e) => handleChange(e, index)}
-                  defaultValue={item?.description}
+                  value={item.description}
                 />
               </div>
             </div>
@@ -148,7 +147,7 @@ function Education() {
             className="text-primary"
             onClick={AddNewEducation}
           >
-            + Add more Education
+            + Add more
           </Button>
           <Button
             variant="outline"
@@ -158,8 +157,7 @@ function Education() {
             - Remove
           </Button>
         </div>
-
-        <Button disabled={loading} onClick={() => onSave()}>
+        <Button disabled={loading} onClick={onSave}>
           {loading ? <LoaderCircle className="animate-spin" /> : "Save"}
         </Button>
       </div>
